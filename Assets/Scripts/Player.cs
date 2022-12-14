@@ -94,25 +94,37 @@ public class Player : MonoBehaviour
                 // subtraio da posição do player para gerar um vetor direção
 
                 RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, (mousePos.normalized), (timer * distanceRayHit), ~maskPlayer);
+                // nessa linha atribuo uma nova variável de Physics2D que são os raycast. Os raycast são linhas que detectam a colição com outros colisores
+                // nesse caso utilizei o RaycastAll pois presiso saber todos os elemento em que o colisor do DashAttack irá acertar e fazer com que o player
+                // teleporte para o último inimigo.
+                // faço a RAY(linha) da posição do player até a posição final do dash (fiz uma gambiarra que deu certo pra arrumar essa ray).
+                // e o último parâmetro é a layer que eu quero ignorar, para que o colisor do player não interaja com a Ray
                 Debug.DrawRay(transform.position, (mousePos.normalized) * (timer * distanceRayHit), Color.red, 3);
-                int enemysHit = 0;
+                // isso é para eu conseguir ver aonde o Ray está (printa a ray no editor)
 
-                for (int i = 0; i < hits.Length; i++)
-                {
-                    if (hits[i].collider.GetComponent<Life>().currentHealth > 0 && !hits[i].collider.isTrigger)
-                    {
-                        enemysHit++;
-                        StartCoroutine(DashAttackKill(hits[i].collider));
-                        hits[i].collider.GetComponent<Life>().StartCoroutine("TakeDmg",dashDmg);
+                int enemysHit = 0; // determina quantos inimigos foram atingidos.
+                // usei isso para saber qual função usar. Função MissDashAttack (não acertou nenhum inimigo) ou DashAttackKill (acertou)
+
+                for (int i = 0; i < hits.Length; i++) // Faço um loop para passar por todos os inimigos em que o Ray colidiu
+                {                                     // O RaycastAll retorna uma lista com os hits e eu preciso navegar por eles
+
+                    if (hits[i].collider.GetComponent<Life>().currentHealth > 0 && !hits[i].collider.isTrigger) 
+                    {   // na linha de cima verifico se na vida do objeto colidido a vida atual dele é maior que 0, pois isso verifica pra mim se ele tem esse componente
+                        // e se ele ta vivo. Logo após, vejo se o colisor verificado não é trigger (faço isso, pois o inimigo possui um colisor de agro e o raycast vai detectar isso)
+                        // e eu quero que a Ray detecte apenas a colisor que está presente no player
+
+                        enemysHit++;    // conto quantos inimigos foram atingidos
+                        StartCoroutine(DashAttackKill(hits[i].collider));   // rodo a corotina passando quem foi atingido de acordo com a Ray
+                        hits[i].collider.GetComponent<Life>().StartCoroutine("TakeDmg",dashDmg); // pego o componente de vida do que foi atingido e rodo a função de tomar dano da vida
                         Debug.Log("Acertou Enemy");
                     }
                 }
-                if (enemysHit > 0)
+                if (enemysHit > 0) // Aqui verifico se alguém foi atingido, se foi não continuo o resto da função
                 {
                     return;
                 }
 
-                StartCoroutine(MissDashAttack());// se o ray não colidiu em nada roda essa função
+                StartCoroutine(MissDashAttack());// se o ray não colidiu ninguém roda essa função
                 Debug.Log("Errou");
 
 
@@ -120,10 +132,10 @@ public class Player : MonoBehaviour
         }
 
     }
-    public IEnumerator MissDashAttack() // Função que conta o tempo (nesse caso é o tempo de coldown).
+    public IEnumerator MissDashAttack() // Função que conta o tempo (nesse caso é o tempo de coldown) e permite o dash em FixedUpdate.
     {
         dashAttack = true;      // antes do Yield return colocamos ações que devem ser executadas antes do temporizador rolar.
-        canDashAtk = false;
+        canDashAtk = false;     // variável relacionada ao cooldown do ataque
         MoveInput = Vector2.zero;// zero o move input para que não interfira no dash
         yield return new WaitForSeconds(timer * dashAtkTime); //
 
@@ -135,9 +147,13 @@ public class Player : MonoBehaviour
 
 
     }
-    public IEnumerator DashAttackKill(Collider2D hit) // Função que conta o tempo (nesse caso é o tempo de coldown).
+    public IEnumerator DashAttackKill(Collider2D hit) // Função que faz com que o player se teleporte para tras do inimigo atingido.
     {
         rb.MovePosition(hit.transform.position - (transform.position - hit.transform.position).normalized);
+        // função de movimentação em que eu pego a posição do inimigo atingido e subtraio pela posição do player menos a posição do inimigo atingido normalizada
+        // em "transform.position - hit.transform.position" cria-se um vetor, e normalizando esse vetor temos a direção em que o player está dando o dash attack
+        // em relação o inimigo
+        // com isso tendo esse vetor normalizado, também temos um ponto e subtraindo esse ponto da posição do inimigo temos outro vetor/ponto que da atras do inimigo 
         velocidade = fakeSpeed; //redefino a velocidade normal do player
         timer = 0;     // reseto o temporizado para não interferir na próxima contage
         yield return new WaitForSeconds(cooldownDash);  // contador do cooldown do dash
