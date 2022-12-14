@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     public float distanceLimit = 0; // Limitador para o quanto o DashAttack pode ir longe no dash
     public float distanceRayHit = 1; // Distancia que a linha colisora terá para detectar o inimigo
     public float cooldownDash = 0;  // tempo para canDashAtk ficar true
+    public float slowTimeDuration = 0;  // tempo em que o tempo vai ficar lento
+    public float slowFactor = 0;  // tempo em que o tempo vai ficar lento
     public int dashDmg = 0;  // dano do dash no inimigo
     public float velDash;   // Rapides em que o dashAttack terá
     public float dashAtkTime;   // Tempo em que o dashAttack durará
@@ -107,16 +109,18 @@ public class Player : MonoBehaviour
 
                 for (int i = 0; i < hits.Length; i++) // Faço um loop para passar por todos os inimigos em que o Ray colidiu
                 {                                     // O RaycastAll retorna uma lista com os hits e eu preciso navegar por eles
+                    if (hits[i].collider.GetComponent<Life>() == true)
+                    {
+                        if (hits[i].collider.GetComponent<Life>().currentHealth > 0 && !hits[i].collider.isTrigger)
+                        {   // na linha de cima verifico se na vida do objeto colidido a vida atual dele é maior que 0, pois isso verifica pra mim se ele tem esse componente
+                            // e se ele ta vivo. Logo após, vejo se o colisor verificado não é trigger (faço isso, pois o inimigo possui um colisor de agro e o raycast vai detectar isso)
+                            // e eu quero que a Ray detecte apenas a colisor que está presente no player
 
-                    if (hits[i].collider.GetComponent<Life>().currentHealth > 0 && !hits[i].collider.isTrigger) 
-                    {   // na linha de cima verifico se na vida do objeto colidido a vida atual dele é maior que 0, pois isso verifica pra mim se ele tem esse componente
-                        // e se ele ta vivo. Logo após, vejo se o colisor verificado não é trigger (faço isso, pois o inimigo possui um colisor de agro e o raycast vai detectar isso)
-                        // e eu quero que a Ray detecte apenas a colisor que está presente no player
-
-                        enemysHit++;    // conto quantos inimigos foram atingidos
-                        StartCoroutine(DashAttackKill(hits[i].collider));   // rodo a corotina passando quem foi atingido de acordo com a Ray
-                        hits[i].collider.GetComponent<Life>().StartCoroutine("TakeDmg",dashDmg); // pego o componente de vida do que foi atingido e rodo a função de tomar dano da vida
-                        Debug.Log("Acertou Enemy");
+                            enemysHit++;    // conto quantos inimigos foram atingidos
+                            StartCoroutine(DashAttackKill(hits[i].collider));   // rodo a corotina passando quem foi atingido de acordo com a Ray
+                            hits[i].collider.GetComponent<Life>().StartCoroutine("TakeDmg", dashDmg); // pego o componente de vida do que foi atingido e rodo a função de tomar dano da vida
+                            Debug.Log("Acertou Enemy");
+                        }
                     }
                 }
                 if (enemysHit > 0) // Aqui verifico se alguém foi atingido, se foi não continuo o resto da função
@@ -130,6 +134,14 @@ public class Player : MonoBehaviour
 
             }
         }
+        if (Time.timeScale != 1)    // Verifico se timeScale ja está normalizado(= 1)
+        {
+            Time.timeScale += (1f / slowTimeDuration * 1.5f) * Time.unscaledDeltaTime;  // aqui eu faço uma doidera que eu compiei de um vídeo
+                                                                                        // como ta no update vai alterar o timeScale até ser igual a 1
+            Time.timeScale = Mathf.Clamp(Time.timeScale, 0f, 1f);   // aqui eu limito que o valor máximo de timeScale será 1
+        }
+        print(Time.timeScale);
+
 
     }
     public IEnumerator MissDashAttack() // Função que conta o tempo (nesse caso é o tempo de coldown) e permite o dash em FixedUpdate.
@@ -156,7 +168,11 @@ public class Player : MonoBehaviour
         // com isso tendo esse vetor normalizado, também temos um ponto e subtraindo esse ponto da posição do inimigo temos outro vetor/ponto que da atras do inimigo 
         velocidade = fakeSpeed; //redefino a velocidade normal do player
         timer = 0;     // reseto o temporizado para não interferir na próxima contage
-        yield return new WaitForSeconds(cooldownDash);  // contador do cooldown do dash
+
+        Time.timeScale = slowFactor;    // Fator de escala de tempo do jogo (Normalmente é 1) pego essa escala e passo ela para a variável
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;   // É necessário também arrumar o FixedDeltaTime que é o tempo em que as físicas do jogo funcionam
+                                                        // E ele precisa ser arrumado também. São 2 funções de física diferente
+        yield return new WaitForSeconds(slowTimeDuration);  // contador do cooldown do dash
 
     }
     public void DashDistance()

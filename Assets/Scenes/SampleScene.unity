@@ -217,7 +217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireing: 0
   Canfire: 0
-  coldown: 5
+  coldown: 3
   Bullet: {fileID: 4152002217043902519, guid: 93e38d6581486dc4a999c5d63346cd7b, type: 3}
 --- !u!212 &4084543
 SpriteRenderer:
@@ -1089,7 +1089,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireing: 0
   Canfire: 0
-  coldown: 5
+  coldown: 3
   Bullet: {fileID: 4152002217043902519, guid: 93e38d6581486dc4a999c5d63346cd7b, type: 3}
 --- !u!212 &868967883
 SpriteRenderer:
@@ -1240,7 +1240,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1434933151}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: -2, z: 0}
+  m_LocalPosition: {x: -1, y: -5.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1269,6 +1269,8 @@ MonoBehaviour:
   distanceLimit: 0.8
   distanceRayHit: 8
   cooldownDash: 1.2
+  slowTimeDuration: 1.5
+  slowFactor: 0.05
   dashDmg: 1
   velDash: 15
   dashAtkTime: 0.5
@@ -1355,7 +1357,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b5c08e16f766af4685c2608b0086e49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalHealth: 3
+  totalHealth: 100
   currentHealth: 0
   damaged: 0
   timeToDamage: 1
@@ -1478,7 +1480,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireing: 0
   Canfire: 0
-  coldown: 5
+  coldown: 3
   Bullet: {fileID: 4152002217043902519, guid: 93e38d6581486dc4a999c5d63346cd7b, type: 3}
 --- !u!61 &1532139207
 BoxCollider2D:
@@ -1617,7 +1619,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireing: 0
   Canfire: 0
-  coldown: 5
+  coldown: 3
   Bullet: {fileID: 4152002217043902519, guid: 93e38d6581486dc4a999c5d63346cd7b, type: 3}
 --- !u!212 &1663197299
 SpriteRenderer:
