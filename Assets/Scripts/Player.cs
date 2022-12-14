@@ -12,23 +12,28 @@ public class Player : MonoBehaviour
     float fakeSpeed;    // Variável usada para manter o valor de velocidade
     public bool rbVelocity;// parametros booleanos para mudar o tipo de funcao de movimentação
     public bool rbMovePosit;
+
     [Header("Dash Attack")]
     public bool dashAttack = false; // Bool (true ou falso) para verificar se o player está em uma ação de dash
     public bool prepareAttack = false; // bool apra verificar se o player está carregando o ataque (será usado para calcular o tempo que ficou no prepare)
     public bool canDashAtk = true;  // Variável bool usada para deixar o player Dashar depois de um tempo (cooldown)
     public float distanceLimit = 0; // Limitador para o quanto o DashAttack pode ir longe no dash
+    public float distanceRayHit = 1; // Distancia que a linha colisora terá para detectar o inimigo
     public float cooldownDash = 0;  // tempo para canDashAtk ficar true
     public float velDash;   // Rapides em que o dashAttack terá
-    float dashAttackTime = 0; // variável de temporizador para saber quanto tempo o jogador ficou segurando o botão direito
+    public float dashAtkTime;   // Tempo em que o dashAttack durará
+    float timer = 0; // variável de temporizador para saber quanto tempo o jogador ficou segurando o botão direitoa
+    public LayerMask maskPlayer; // variável de temporizador para saber quanto tempo o jogador ficou segurando o botão direitoa
+
 
 
     public Rigidbody2D rb;// definindo onde sera armazenado o componente rb do game object(nesse caso o rb do Player)
 
     void Start()
     {
-        fakeSpeed = velocidade;    
+        fakeSpeed = velocidade;
         rb = GetComponent<Rigidbody2D>(); // pegando o componente rb do GameObject
-        canDashAtk = true; 
+        canDashAtk = true;
     }
 
     void FixedUpdate()
@@ -49,11 +54,10 @@ public class Player : MonoBehaviour
         else if (dashAttack) // Se estiver no meio de um DashAttack executará a função
         {
 
-            Vector3 dashPos = (mousePos.normalized) * (dashAttackTime * 0.5f + 1);  
+            Vector3 dashPos = (mousePos.normalized) * (timer * 0.5f + 1);
             // Utilizo a posição do mouse na tela normalizada e somada com a posição atual do player para gerar o ponto que o dash deve ir
-            // e após isso multiplico pelo tempo em que o jogado ficou segurando o botão direito do mouse (dashAttackTime)
+            // e após isso multiplico pelo tempo em que o jogado ficou segurando o botão direito do mouse (timer)
             // somadao com 1 para dar sempre um vailor maior
-            print(dashPos);
             transform.position = Vector3.MoveTowards(transform.position, transform.position + dashPos, Time.deltaTime * velDash);
             // aqui defino que a posição do player é uma nova posição gerada pela função MoveTowards a qual vai mover da posição atual do player
             // até a posição do player até a posição final do dash (criada baseada na posição do mouse em relação a tela), o ultimo requisição da função 
@@ -84,40 +88,61 @@ public class Player : MonoBehaviour
                 prepareAttack = false;  // Faz com que o contador No FixedUpdate pare
                 rb.velocity = Vector2.zero; // zera a velocidade dada pelo moveInput para não inteferir no dash
                 Debug.Log("Release");
-                mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position; 
+                mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
                 // pega a posição do mouse com uma função da prórpia camera (pego a camera usada na cena e pego a posição da tela para um ponto no jogo)
                 // subtraio da posição do player para gerar um vetor direção
-                StartCoroutine(DashAttack());
+
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, (mousePos.normalized), (timer * distanceRayHit), ~maskPlayer);
+                Debug.DrawRay(transform.position, (mousePos.normalized) * (timer * distanceRayHit), Color.red, 3);
+                if (hit.collider != null)
+                {
+                    StartCoroutine(DashAttackKill(hit.collider));
+                    Debug.Log("Acertou Enemy");
+                }
+                else
+                {
+                    StartCoroutine(MissDashAttack());
+                    Debug.Log("Errou");
+
+                }
                 //starto uma coroutina para difinir os tempos do dash
 
             }
         }
 
     }
-    public IEnumerator DashAttack() // Função que conta o tempo (nesse caso é o tempo de coldown).
+    public IEnumerator MissDashAttack() // Função que conta o tempo (nesse caso é o tempo de coldown).
     {
         dashAttack = true;      // antes do Yield return colocamos ações que devem ser executadas antes do temporizador rolar.
-        canDashAtk = false;     
+        canDashAtk = false;
         MoveInput = Vector2.zero;// zero o move input para que não interfira no dash
-        yield return new WaitForSeconds(dashAttackTime * 0.75f); //
+        yield return new WaitForSeconds(timer * dashAtkTime); //
 
         velocidade = fakeSpeed; //redefino a velocidade normal do player
-        dashAttackTime = 0;     // reseto o temporizado para não interferir na próxima contagem
-        dashAttack = false;     
+        timer = 0;     // reseto o temporizado para não interferir na próxima contagem
+        dashAttack = false;
         yield return new WaitForSeconds(cooldownDash);  // contador do cooldown do dash
         canDashAtk = true;                              // permito o dash
 
 
     }
-    public void DashDistance()      
+    public IEnumerator DashAttackKill(Collider2D hit) // Função que conta o tempo (nesse caso é o tempo de coldown).
     {
-        dashAttackTime += Time.deltaTime;   // Somo na variável dashAttackTime o tempo 
-                                            //(essa parte eu copiei do vídeo de um cara, não sei qual a difereça desses tempos)
-                                            // chuto que deve se que o Time.deltaTime é a diferença do tempo ele sempre da menor que 1
+        rb.MovePosition(hit.transform.position-(transform.position-hit.transform.position).normalized);
+        velocidade = fakeSpeed; //redefino a velocidade normal do player
+        timer = 0;     // reseto o temporizado para não interferir na próxima contage
+        yield return new WaitForSeconds(cooldownDash);  // contador do cooldown do dash
 
-        if (dashAttackTime > distanceLimit) // verifico se o contador passou do limite e redefino el igual ao limite para que a distância mude
+    }
+    public void DashDistance()
+    {
+        timer += Time.deltaTime;   // Somo na variável timer o tempo 
+                                   //(essa parte eu copiei do vídeo de um cara, não sei qual a difereça desses tempos)
+                                   // chuto que deve se que o Time.deltaTime é a diferença do tempo ele sempre da menor que 1
+
+        if (timer > distanceLimit) // verifico se o contador passou do limite e redefino el igual ao limite para que a distância mude
         {
-            dashAttackTime = distanceLimit;
+            timer = distanceLimit;
         }
         // A função DashDistance controla tanto o tempo de dash como a velocidade de dash
         // interessante observar que na função FixedUpdate() estou mexendo com o vetor velocidade em que o dash terá (rapidez do dash), 

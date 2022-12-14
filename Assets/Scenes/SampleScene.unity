@@ -847,7 +847,7 @@ GameObject:
   - component: {fileID: 1434933155}
   - component: {fileID: 1434933156}
   - component: {fileID: 1434933157}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -939,9 +939,15 @@ MonoBehaviour:
   rbMovePosit: 0
   dashAttack: 0
   prepareAttack: 0
+  canDashAtk: 1
   distanceLimit: 0.8
+  distanceRayHit: 8
   cooldownDash: 1.2
-  velDash: 10
+  velDash: 15
+  dashAtkTime: 0.5
+  maskPlayer:
+    serializedVersion: 2
+    m_Bits: 64
   rb: {fileID: 0}
 --- !u!50 &1434933155
 Rigidbody2D:
@@ -963,7 +969,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!95 &1434933156
 Animator:
   serializedVersion: 4
@@ -1037,7 +1043,9 @@ GameObject:
   - component: {fileID: 1532139204}
   - component: {fileID: 1532139203}
   - component: {fileID: 1532139206}
+  - component: {fileID: 1532139208}
   - component: {fileID: 1532139205}
+  - component: {fileID: 1532139207}
   m_Layer: 0
   m_Name: Torret
   m_TagString: Enemy
@@ -1142,5 +1150,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireing: 0
   Canfire: 0
-  coldown: 3
+  coldown: 100
   Bullet: {fileID: 1761254710093196154, guid: 286f85287238f1e4c8845f5096aa8356, type: 3}
+--- !u!61 &1532139207
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532139202}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.625, y: 0.625}
+    newSize: {x: 0.625, y: 0.625}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.625, y: 0.625}
+  m_EdgeRadius: 0
+--- !u!114 &1532139208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532139202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b5c08e16f766af4685c2608b0086e49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TotalHealth: 1
+  ActualHealth: 0
+  damaged: 0
+  TimeToDamage: 1
