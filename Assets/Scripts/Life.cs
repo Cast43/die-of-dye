@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Life : MonoBehaviour
 {
-    public int TotalHealth;
-    public int ActualHealth;
+    public int totalHealth;
+    public int currentHealth;
     public bool damaged = false;
-    public float TimeToDamage = 1;
+    public float timeToDamage = 1;
+    public Color colorOfObj;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +17,7 @@ public class Life : MonoBehaviour
     // utilizei a função awake pois a start não tava funcionando
     void Awake() // a função awake é a 1 função (antes do objeto ser instanciado) a rodar de um GameObject
     {
-        ActualHealth = TotalHealth;
+        currentHealth = totalHealth;
 
     }
 
@@ -29,14 +30,18 @@ public class Life : MonoBehaviour
     {
         Destroy(this.gameObject);
     }
-    public IEnumerator TakeDmg() // Função que conta o tempo (nesse caso é o tempo de coldown).
+    public IEnumerator TakeDmg(int damage) // Função que conta o tempo (nesse caso é o tempo de coldown).
     {
         damaged = true;                 // antes do Yield return colocamos ações que devem ser executadas antes do temporizador rolar.
-        ActualHealth--;
+        currentHealth -= damage;
+        if(currentHealth <= 0)
+        {
+            Death();
+        }
         GetComponent<SpriteRenderer>().color = Color.red; //ao ser atingido 
-        yield return new WaitForSeconds(TimeToDamage);
+        yield return new WaitForSeconds(timeToDamage);
         Debug.Log("sdasdad");
-        GetComponent<SpriteRenderer>().color = Color.white; //ao ser atingido 
+        GetComponent<SpriteRenderer>().color = colorOfObj; //ao ser atingido 
         damaged = false;
 
     }

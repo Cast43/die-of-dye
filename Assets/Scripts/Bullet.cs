@@ -6,6 +6,7 @@ public class Bullet : MonoBehaviour
 {
     // Start is called before the first frame update
     public float speed;
+    public int damage;
     public Rigidbody2D rb;
     public GameObject target; //defino onde será armazenado o GM(GameObject)
     void Start()
@@ -33,17 +34,12 @@ public class Bullet : MonoBehaviour
             // essa linha pega o script vida do objeto colidido (que nesse caso é o objeto com tag player)
             if (!collision.GetComponent<Life>().damaged)
             {
-                collision.GetComponent<Life>().StartCoroutine(collision.GetComponent<Life>().TakeDmg());
+                collision.GetComponent<Life>().StartCoroutine(collision.GetComponent<Life>().TakeDmg(damage));
             }
             else
             {
                 Destroy(this.gameObject, 3);
                 return;
-            }
-
-            if (collision.GetComponent<Life>().ActualHealth <= 0)
-            {
-                collision.GetComponent<Life>().Death();
             }
         }
         if(collision.tag == "Enemy")

@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 6
+  damage: 1
   rb: {fileID: 0}
   target: {fileID: 0}
 --- !u!50 &5076284353153598039

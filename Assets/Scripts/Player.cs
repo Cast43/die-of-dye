@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     public float distanceLimit = 0; // Limitador para o quanto o DashAttack pode ir longe no dash
     public float distanceRayHit = 1; // Distancia que a linha colisora terá para detectar o inimigo
     public float cooldownDash = 0;  // tempo para canDashAtk ficar true
+    public int dashDmg = 0;  // dano do dash no inimigo
     public float velDash;   // Rapides em que o dashAttack terá
     public float dashAtkTime;   // Tempo em que o dashAttack durará
     float timer = 0; // variável de temporizador para saber quanto tempo o jogador ficou segurando o botão direitoa
@@ -92,20 +93,28 @@ public class Player : MonoBehaviour
                 // pega a posição do mouse com uma função da prórpia camera (pego a camera usada na cena e pego a posição da tela para um ponto no jogo)
                 // subtraio da posição do player para gerar um vetor direção
 
-                RaycastHit2D hit = Physics2D.Raycast(transform.position, (mousePos.normalized), (timer * distanceRayHit), ~maskPlayer);
+                RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, (mousePos.normalized), (timer * distanceRayHit), ~maskPlayer);
                 Debug.DrawRay(transform.position, (mousePos.normalized) * (timer * distanceRayHit), Color.red, 3);
-                if (hit.collider != null)
-                {
-                    StartCoroutine(DashAttackKill(hit.collider));
-                    Debug.Log("Acertou Enemy");
-                }
-                else
-                {
-                    StartCoroutine(MissDashAttack());
-                    Debug.Log("Errou");
+                int enemysHit = 0;
 
+                for (int i = 0; i < hits.Length; i++)
+                {
+                    if (hits[i].collider.GetComponent<Life>().currentHealth > 0 && !hits[i].collider.isTrigger)
+                    {
+                        enemysHit++;
+                        StartCoroutine(DashAttackKill(hits[i].collider));
+                        hits[i].collider.GetComponent<Life>().StartCoroutine("TakeDmg",dashDmg);
+                        Debug.Log("Acertou Enemy");
+                    }
                 }
-                //starto uma coroutina para difinir os tempos do dash
+                if (enemysHit > 0)
+                {
+                    return;
+                }
+
+                StartCoroutine(MissDashAttack());// se o ray não colidiu em nada roda essa função
+                Debug.Log("Errou");
+
 
             }
         }
@@ -128,7 +137,7 @@ public class Player : MonoBehaviour
     }
     public IEnumerator DashAttackKill(Collider2D hit) // Função que conta o tempo (nesse caso é o tempo de coldown).
     {
-        rb.MovePosition(hit.transform.position-(transform.position-hit.transform.position).normalized);
+        rb.MovePosition(hit.transform.position - (transform.position - hit.transform.position).normalized);
         velocidade = fakeSpeed; //redefino a velocidade normal do player
         timer = 0;     // reseto o temporizado para não interferir na próxima contage
         yield return new WaitForSeconds(cooldownDash);  // contador do cooldown do dash
