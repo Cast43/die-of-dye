@@ -1,2 +1,2 @@
 # die-of-dye
-A game by students of UTFRP paraná
+A game by students of University UTFPR in paraná Brazil
