@@ -28,6 +28,18 @@ public class Player : MonoBehaviour
     float timer = 0; // variável de temporizador para saber quanto tempo o jogador ficou segurando o botão direitoa
     public LayerMask maskPlayer; // variável de temporizador para saber quanto tempo o jogador ficou segurando o botão direitoa
 
+    [Header("BloodTrail")]
+    public bool bloodTrail;
+    public GameObject linePrefab;
+    public GameObject currentLine;
+    public List<GameObject> lines;
+    public List<Vector2> linesPos;
+    public List<Vector2> bloodPos;
+    public LineRenderer lineRenderer;
+    public float timeOfTrail;
+    public float timeBleeding;
+    public GameObject DamageArea;
+
 
 
     public Rigidbody2D rb;// definindo onde sera armazenado o componente rb do game object(nesse caso o rb do Player)
@@ -83,14 +95,12 @@ public class Player : MonoBehaviour
                 {
                     prepareAttack = true; // faz com que afunção rode apenas 1 vez
                                           // e além disso permite que o contador da função DashDistance no FixedUpdate começe a contagem;
-                    Debug.Log("Prepare");
                 }
             }
             if (Input.GetMouseButtonUp(1) && prepareAttack)// verifica se o botão do mouse foi solto
             {
                 prepareAttack = false;  // Faz com que o contador No FixedUpdate pare
                 rb.velocity = Vector2.zero; // zera a velocidade dada pelo moveInput para não inteferir no dash
-                Debug.Log("Release");
                 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
                 // pega a posição do mouse com uma função da prórpia camera (pego a camera usada na cena e pego a posição da tela para um ponto no jogo)
                 // subtraio da posição do player para gerar um vetor direção
@@ -134,23 +144,52 @@ public class Player : MonoBehaviour
 
             }
         }
+        if (Input.GetKeyDown(KeyCode.E) && lines.Count > 2)
+        {
+            GameObject area = Instantiate(DamageArea, Vector3.zero, Quaternion.identity);
+            PolygonCollider2D collider2D = area.GetComponent<PolygonCollider2D>();
+
+            collider2D.SetPath(0, linesPos);
+            for (int i = 0; i < lines.Count-1; i++)
+            {
+                Destroy(lines[i]);
+            }
+            for (int i = 0; i < linesPos.Count-1; i++)
+            {
+                UpdateLine(linesPos[i]);
+            }
+            lineRenderer.startColor = Color.red; 
+            lineRenderer.endColor = Color.red; 
+
+            StartCoroutine(CleanTrails(area));
+
+        }
+
         if (Time.timeScale != 1)    // Verifico se timeScale ja está normalizado(= 1)
         {
             Time.timeScale += (1f / slowTimeDuration * 1.5f) * Time.unscaledDeltaTime;  // aqui eu faço uma doidera que eu compiei de um vídeo
                                                                                         // como ta no update vai alterar o timeScale até ser igual a 1
             Time.timeScale = Mathf.Clamp(Time.timeScale, 0f, 1f);   // aqui eu limito que o valor máximo de timeScale será 1
         }
-        print(Time.timeScale);
-
-
+        if (bloodTrail && dashAttack)
+        {
+            UpdateLine(transform.position);
+        }
     }
     public IEnumerator MissDashAttack() // Função que conta o tempo (nesse caso é o tempo de coldown) e permite o dash em FixedUpdate.
     {
         dashAttack = true;      // antes do Yield return colocamos ações que devem ser executadas antes do temporizador rolar.
         canDashAtk = false;     // variável relacionada ao cooldown do ataque
         MoveInput = Vector2.zero;// zero o move input para que não interfira no dash
+
+        if (bloodTrail)
+        {
+            CreateLine();
+        }
+
         yield return new WaitForSeconds(timer * dashAtkTime); //
 
+        linesPos.Add(transform.position);
         velocidade = fakeSpeed; //redefino a velocidade normal do player
         timer = 0;     // reseto o temporizado para não interferir na próxima contagem
         dashAttack = false;
@@ -162,6 +201,11 @@ public class Player : MonoBehaviour
     public IEnumerator DashAttackKill(Collider2D hit) // Função que faz com que o player se teleporte para tras do inimigo atingido.
     {
         rb.MovePosition(hit.transform.position - (transform.position - hit.transform.position).normalized);
+        CreateLine();
+        UpdateLine(hit.transform.position);
+        linesPos.Add(hit.transform.position);   // Adicionando a lista de posições a posição final do dash que é a posição do inimigo atingido
+        StartCoroutine(BloodTrail());
+
         // função de movimentação em que eu pego a posição do inimigo atingido e subtraio pela posição do player menos a posição do inimigo atingido normalizada
         // em "transform.position - hit.transform.position" cria-se um vetor, e normalizando esse vetor temos a direção em que o player está dando o dash attack
         // em relação o inimigo
@@ -173,7 +217,7 @@ public class Player : MonoBehaviour
         Time.fixedDeltaTime = Time.timeScale * 0.02f;   // É necessário também arrumar o FixedDeltaTime que é o tempo em que as físicas do jogo funcionam
                                                         // E ele precisa ser arrumado também. São 2 funções de física diferente
         yield return new WaitForSeconds(slowTimeDuration);  // contador do cooldown do dash
-
+        linesPos.Add(transform.position);
     }
     public void DashDistance()
     {
@@ -188,6 +232,46 @@ public class Player : MonoBehaviour
         // A função DashDistance controla tanto o tempo de dash como a velocidade de dash
         // interessante observar que na função FixedUpdate() estou mexendo com o vetor velocidade em que o dash terá (rapidez do dash), 
         // e na Corotina DashAttack() há o controle do tempo em que o dash irá ter (distância do dash)
+    }
+
+    public void CreateLine()
+    {
+        currentLine = Instantiate(linePrefab, Vector3.zero, Quaternion.identity);
+        lines.Add(currentLine);
+        linesPos.Add(transform.position);
+        lineRenderer = currentLine.GetComponent<LineRenderer>();
+        bloodPos.Clear();
+        bloodPos.Add(transform.position);
+        bloodPos.Add(transform.position);
+        lineRenderer.SetPosition(0, bloodPos[0]);
+        lineRenderer.SetPosition(1, bloodPos[1]);
+
+    }
+    public void UpdateLine(Vector2 position)
+    {
+        bloodPos.Add(transform.position);
+        lineRenderer.positionCount++;
+        lineRenderer.SetPosition(lineRenderer.positionCount - 1, position);
+    }
+    public IEnumerator BloodTrail()
+    {
+        bloodTrail = true;
+        transform.GetComponent<SpriteRenderer>().color = Color.green;
+        yield return new WaitForSeconds(timeOfTrail);
+        transform.GetComponent<SpriteRenderer>().color = Color.white;
+        bloodTrail = false;
+    }
+    public IEnumerator CleanTrails(GameObject area)
+    {
+        yield return new WaitForSeconds(timeBleeding);
+
+        for (int i = 0; i < lines.Count; i++)
+        {
+            Destroy(lines[i]);
+        }
+        Destroy(area);
+        linesPos.Clear();
+        lines.Clear();
     }
 
 }

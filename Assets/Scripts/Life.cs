@@ -40,7 +40,6 @@ public class Life : MonoBehaviour
         }
         GetComponent<SpriteRenderer>().color = Color.red; //ao ser atingido 
         yield return new WaitForSeconds(timeToDamage);
-        Debug.Log("sdasdad");
         GetComponent<SpriteRenderer>().color = colorOfObj; //ao ser atingido 
         damaged = false;
 
