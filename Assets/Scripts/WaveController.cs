@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class WaveController : MonoBehaviour
@@ -15,6 +16,7 @@ public class WaveController : MonoBehaviour
     public float maxPosInstY;
     [Header("HUD")]
     public GameObject waveCout;
+    public GameObject canvas;
 
     void Start()
     {
@@ -29,7 +31,9 @@ public class WaveController : MonoBehaviour
         }
         else if (numEnemys >= wave * 1.5f + 2)
         {
+            
             wave++;
+            StartCoroutine(NextWave());
             numEnemys = 0;
         }
 
@@ -66,6 +70,15 @@ public class WaveController : MonoBehaviour
 
         yield return new WaitForSeconds(timeSpawn);
         spawn = false;
+
+    }
+    public IEnumerator NextWave()
+    {
+        GameObject UIWave = Instantiate(waveCout,canvas.transform.position,Quaternion.identity,canvas.transform);
+        UIWave.GetComponentInChildren<TMP_Text>().text = "Wave " + wave.ToString();
+        timeSpawn *= 0.7f;
+        yield return new WaitForSeconds(8);
+        Destroy(UIWave);
 
     }
 }

@@ -224,6 +224,7 @@ public class Player : MonoBehaviour
         UpdateLine(hit.transform.position);
         StartCoroutine(BloodTrail());
 
+
         Instantiate(bloodParticles, hit.transform.position, Quaternion.LookRotation(transform.position,hit.transform.position));
 
         // função de movimentação em que eu pego a posição do inimigo atingido e subtraio pela posição do player menos a posição do inimigo atingido normalizada
