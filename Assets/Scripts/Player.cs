@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
     public float timeOfTrail;
     public float timeBleeding;
     public GameObject DamageArea;
+    public GameObject bloodParticles;
 
 
 
@@ -131,7 +132,6 @@ public class Player : MonoBehaviour
                             enemysHit++;    // conto quantos inimigos foram atingidos
                             StartCoroutine(DashAttackKill(hits[i].collider));   // rodo a corotina passando quem foi atingido de acordo com a Ray
                             hits[i].collider.GetComponent<Life>().StartCoroutine("TakeDmg", dashDmg); // pego o componente de vida do que foi atingido e rodo a função de tomar dano da vida
-                            Debug.Log("Acertou Enemy");
                         }
                     }
                 }
@@ -141,7 +141,6 @@ public class Player : MonoBehaviour
                 }
 
                 StartCoroutine(MissDashAttack());// se o ray não colidiu ninguém roda essa função
-                Debug.Log("Errou");
 
 
             }
@@ -224,6 +223,8 @@ public class Player : MonoBehaviour
 
         UpdateLine(hit.transform.position);
         StartCoroutine(BloodTrail());
+
+        Instantiate(bloodParticles, hit.transform.position, Quaternion.LookRotation(transform.position,hit.transform.position));
 
         // função de movimentação em que eu pego a posição do inimigo atingido e subtraio pela posição do player menos a posição do inimigo atingido normalizada
         // em "transform.position - hit.transform.position" cria-se um vetor, e normalizando esse vetor temos a direção em que o player está dando o dash attack

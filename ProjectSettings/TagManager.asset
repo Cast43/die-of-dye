@@ -39,6 +39,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: floor
+    uniqueID: 1045578075
+    locked: 0
+  - name: trail
+    uniqueID: 553779905
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Entities
+    uniqueID: 663717089
+    locked: 0
+  - name: Projectiles
+    uniqueID: 561369205
     locked: 0
