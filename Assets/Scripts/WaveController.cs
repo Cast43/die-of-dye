@@ -17,12 +17,16 @@ public class WaveController : MonoBehaviour
     public float maxPosInstX;
     public float maxPosInstY;
     [Header("HUD")]
-    public GameObject waveCout;
     public GameObject canvas;
+    public GameObject waveCout;
+    public GameObject Dica;
 
     void Start()
     {
-        StartCoroutine(FirstWave());
+        if (wave == 0)
+        {
+            Tutorial();
+        }
 
     }
 
@@ -30,7 +34,7 @@ public class WaveController : MonoBehaviour
     {
         if (!spawn && numSpawn < wave * 1.5f + 2)
         {
-            int enemyType = Random.Range(0,enemys.Length);
+            int enemyType = Random.Range(0, enemys.Length);
             StartCoroutine(Spawn(enemyType));
         }
         else if (numEnemysActual == 0 && numSpawn >= (int)(wave * 1.5f + 2))
@@ -84,14 +88,19 @@ public class WaveController : MonoBehaviour
         numSpawn = 0;
         yield return new WaitForSeconds(8);
         Destroy(UIWave);
-
     }
-    public IEnumerator FirstWave()
+    private void Tutorial()
     {
+        GameObject inimigo1 = Instantiate(enemys[1], new Vector2(0, -1), Quaternion.identity);
+        GameObject inimigo2 = Instantiate(enemys[1], new Vector2(2, 1), Quaternion.identity);
+        GameObject inimigo3 = Instantiate(enemys[1], new Vector2(-2, 1), Quaternion.identity);
+        inimigo1.GetComponent<Enemy>().speed = 0;
+        inimigo2.GetComponent<Enemy>().speed = 0;
+        inimigo3.GetComponent<Enemy>().speed = 0;
+        numEnemysActual = 3;
+        numSpawn = 3;
         GameObject UIWave = Instantiate(waveCout, canvas.transform.position, Quaternion.identity, canvas.transform);
-        UIWave.GetComponentInChildren<TMP_Text>().text = "Wave " + wave.ToString();
-        yield return new WaitForSeconds(8);
-        Destroy(UIWave);
-
+        UIWave.GetComponentInChildren<TMP_Text>().text = "Wave Tutorial";
+        Destroy(UIWave,8);
     }
 }

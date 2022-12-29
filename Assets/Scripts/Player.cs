@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
 
     [Header("Dash Attack")]
     public bool dashAttack = false; // Bool (true ou falso) para verificar se o player está em uma ação de dash
+    public bool dashAttackHit = false; // Bool (true ou falso) para verificar se o player está em uma ação de dash
     public bool prepareAttack = false; // bool apra verificar se o player está carregando o ataque (será usado para calcular o tempo que ficou no prepare)
     public bool canDashAtk = true;  // Variável bool usada para deixar o player Dashar depois de um tempo (cooldown)
     public float distanceLimit = 0; // Limitador para o quanto o DashAttack pode ir longe no dash
@@ -90,6 +91,13 @@ public class Player : MonoBehaviour
 
         if (!dashAttack && canDashAtk)  // Se não estiver em um dash e ja tiver passado o cooldown pode dashar
         {
+            if (prepareAttack)
+            {
+                GetComponent<LineRenderer>().enabled = true;
+                Vector2 newMousepos = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position);
+                GetComponent<LineRenderer>().SetPosition(0, transform.position);
+                GetComponent<LineRenderer>().SetPosition(1, rb.position + newMousepos.normalized * (timer * distanceRayHit));
+            }
             if (Input.GetMouseButton(1))// Verifica se o botão direito do mouse foi apertado
             {
                 velocidade = fakeSpeed / 2; //Diminui a velocidade do player enquanto ele tiver com o botão apertado
@@ -102,6 +110,7 @@ public class Player : MonoBehaviour
             }
             if (Input.GetMouseButtonUp(1) && prepareAttack)// verifica se o botão do mouse foi solto
             {
+                GetComponent<LineRenderer>().enabled = false;
                 prepareAttack = false;  // Faz com que o contador No FixedUpdate pare
                 rb.velocity = Vector2.zero; // zera a velocidade dada pelo moveInput para não inteferir no dash
                 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
@@ -218,6 +227,7 @@ public class Player : MonoBehaviour
     }
     public IEnumerator DashAttackKill(Collider2D hit) // Função que faz com que o player se teleporte para tras do inimigo atingido.
     {
+        dashAttackHit = true;
         rb.MovePosition(hit.transform.position - (transform.position - hit.transform.position).normalized);
         CreateLine();
         linesPos.Add(hit.transform.position - (transform.position - hit.transform.position).normalized);
@@ -226,7 +236,7 @@ public class Player : MonoBehaviour
         StartCoroutine(BloodTrail());
 
 
-        Instantiate(bloodParticles, hit.transform.position, Quaternion.LookRotation(transform.position,hit.transform.position));
+        Instantiate(bloodParticles, hit.transform.position, Quaternion.LookRotation(transform.position, hit.transform.position));
 
         // função de movimentação em que eu pego a posição do inimigo atingido e subtraio pela posição do player menos a posição do inimigo atingido normalizada
         // em "transform.position - hit.transform.position" cria-se um vetor, e normalizando esse vetor temos a direção em que o player está dando o dash attack
