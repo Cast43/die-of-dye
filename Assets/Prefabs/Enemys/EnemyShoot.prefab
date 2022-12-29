@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 538541365194355640}
   - component: {fileID: 538541365194355638}
   - component: {fileID: 538541365194355643}
-  - component: {fileID: 538541365194355641}
   - component: {fileID: 538541365194355639}
+  - component: {fileID: -6628735416566520503}
   m_Layer: 0
   m_Name: EnemyShoot
   m_TagString: Enemy
@@ -76,10 +76,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 663717089
-  m_SortingLayer: 2
+  m_SortingLayer: 1
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: b44b46ba2046e0e4ca69a0291d714621, type: 3}
-  m_Color: {r: 1, g: 0.61960787, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: b8c36ecd842b5c14c8ab77d04b1f0753, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -108,6 +108,7 @@ MonoBehaviour:
   maxDist: 4
   fireing: 0
   Canfire: 0
+  isShoot: 1
   coldown: 3
   Bullet: {fileID: 4152002217043902519, guid: 93e38d6581486dc4a999c5d63346cd7b, type: 3}
 --- !u!114 &538541365194355638
@@ -126,7 +127,9 @@ MonoBehaviour:
   currentHealth: 0
   damaged: 0
   timeToDamage: 1
-  colorOfObj: {r: 1, g: 0.61900264, b: 0, a: 1}
+  colorOfObj: {r: 1, g: 1, b: 1, a: 1}
+  Lifes: []
+  baseLife: {fileID: 0}
 --- !u!58 &538541365194355643
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -143,32 +146,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 4
---- !u!61 &538541365194355641
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 538541365194355644}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.625, y: 0.625}
-    newSize: {x: 0.625, y: 0.625}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.625, y: 0.625}
-  m_EdgeRadius: 0
 --- !u!50 &538541365194355639
 Rigidbody2D:
   serializedVersion: 4
@@ -190,3 +167,29 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!61 &-6628735416566520503
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538541365194355644}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 0.625, y: 0.625}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0

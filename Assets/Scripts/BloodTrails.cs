@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BloodTrails : MonoBehaviour
 {
+    public int NumLines;
     Player player;
     LineRenderer lineRenderer;
     // Start is called before the first frame update
@@ -21,7 +22,17 @@ public class BloodTrails : MonoBehaviour
     {
         if (collision.tag == "Enemy" && collision.GetComponent<Life>().currentHealth > 0 && !collision.isTrigger)
         {
-            collision.GetComponent<Life>().StartCoroutine("TakeDmg", player.dashDmg);
+
+            if (collision.GetComponent<Life>().shield == null)
+            {
+                print(NumLines);
+                collision.GetComponent<Life>().StartCoroutine("TakeDmg", NumLines-2);
+            }
+            else if(collision.GetComponent<Life>().shield != null && collision.GetComponent<Life>().shield.GetComponent<Life>().currentHealth > 0)
+            {
+                collision.GetComponent<Life>().StartCoroutine("ArmorDmg", NumLines-2);
+            }
+
 
         }
     }

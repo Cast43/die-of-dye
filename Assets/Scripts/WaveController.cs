@@ -8,8 +8,10 @@ public class WaveController : MonoBehaviour
     [Header("WaveInfo")]
     public int wave = 0;
     public float timeSpawn = 1;
-    public int numEnemys = 0;
+    public int numSpawn = 0;
+    public int numEnemysActual = 0;
     public bool spawn = false;
+    public bool waveDone = false;
     [Header("EnemysInfo")]
     public GameObject[] enemys;
     public float maxPosInstX;
@@ -20,28 +22,29 @@ public class WaveController : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(FirstWave());
 
     }
 
     void Update()
     {
-        if (!spawn && numEnemys < wave * 1.5f + 2)
+        if (!spawn && numSpawn < wave * 1.5f + 2)
         {
-            StartCoroutine(Spawn(0));
+            int enemyType = Random.Range(0,enemys.Length);
+            StartCoroutine(Spawn(enemyType));
         }
-        else if (numEnemys >= wave * 1.5f + 2)
+        else if (numEnemysActual == 0 && numSpawn >= (int)(wave * 1.5f + 2))
         {
-            
             wave++;
             StartCoroutine(NextWave());
-            numEnemys = 0;
         }
 
     }
     public IEnumerator Spawn(int type) // Função que conta o tempo (nesse caso é o tempo de coldown).
     {
         spawn = true;
-        numEnemys++;
+        numSpawn++;
+        numEnemysActual++;
 
         if (Random.Range(1, 3) == 1)
         {
@@ -74,9 +77,19 @@ public class WaveController : MonoBehaviour
     }
     public IEnumerator NextWave()
     {
-        GameObject UIWave = Instantiate(waveCout,canvas.transform.position,Quaternion.identity,canvas.transform);
+        GameObject UIWave = Instantiate(waveCout, canvas.transform.position, Quaternion.identity, canvas.transform);
         UIWave.GetComponentInChildren<TMP_Text>().text = "Wave " + wave.ToString();
         timeSpawn *= 0.7f;
+        numEnemysActual = 0;
+        numSpawn = 0;
+        yield return new WaitForSeconds(8);
+        Destroy(UIWave);
+
+    }
+    public IEnumerator FirstWave()
+    {
+        GameObject UIWave = Instantiate(waveCout, canvas.transform.position, Quaternion.identity, canvas.transform);
+        UIWave.GetComponentInChildren<TMP_Text>().text = "Wave " + wave.ToString();
         yield return new WaitForSeconds(8);
         Destroy(UIWave);
 

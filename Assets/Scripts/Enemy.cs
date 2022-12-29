@@ -14,22 +14,25 @@ public class Enemy : MonoBehaviour
     [Header("Shoot")]
     public bool fireing = false;
     public bool Canfire = false;
+    public bool isShoot = false;
     public float coldown;
     public GameObject Bullet;
-
+    [Header("Shield")]
     Player player;
     Rigidbody2D rb;
+    Animator anim;
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<Player>();
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
         StartCoroutine(colldownShoot());
 
     }
 
     void Update()
     {
-        if (Canfire && !fireing) // aqui verifico se o player está dentro do collider trigger(Canfire) e não está atirando (fireing)
+        if (Canfire && !fireing && isShoot) // aqui verifico se o player está dentro do collider trigger(Canfire) e não está atirando (fireing)
         {
             Shoot();
         }

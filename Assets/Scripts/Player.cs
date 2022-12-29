@@ -150,6 +150,7 @@ public class Player : MonoBehaviour
 
             GameObject area = Instantiate(DamageArea, Vector3.zero, Quaternion.identity);
             PolygonCollider2D collider2D = area.GetComponent<PolygonCollider2D>();
+            area.GetComponent<BloodTrails>().NumLines = lines.Count;
 
             collider2D.SetPath(0, linesPos);
             for (int i = 0; i < linesPos.Count - 1; i++)
