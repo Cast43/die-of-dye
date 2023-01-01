@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     public int dashDmg = 0;  // dano do dash no inimigo
     public float velDash;   // Rapides em que o dashAttack terá
     public float dashAtkTime;   // Tempo em que o dashAttack durará
-    float timer = 0; // variável de temporizador para saber quanto tempo o jogador ficou segurando o botão direitoa
+    public float timer = 0; // variável de temporizador para saber quanto tempo o jogador ficou segurando o botão direitoa
     public LayerMask maskPlayer; // variável de temporizador para saber quanto tempo o jogador ficou segurando o botão direitoa
 
     [Header("BloodTrail")]
@@ -228,7 +228,7 @@ public class Player : MonoBehaviour
     public IEnumerator DashAttackKill(Collider2D hit) // Função que faz com que o player se teleporte para tras do inimigo atingido.
     {
         dashAttackHit = true;
-        rb.MovePosition(hit.transform.position - (transform.position - hit.transform.position).normalized);
+        rb.MovePosition(hit.transform.position - (transform.position - hit.transform.position).normalized*1.4f);
         CreateLine();
         linesPos.Add(hit.transform.position - (transform.position - hit.transform.position).normalized);
 

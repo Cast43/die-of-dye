@@ -126,6 +126,7 @@ MonoBehaviour:
   colorOfObj: {r: 0, g: 0, b: 0, a: 0}
   Lifes: []
   baseLife: {fileID: 0}
+  UIcontroller: {fileID: 0}
 --- !u!1 &6647570473232613600
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,16 +229,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19310a03f52b2d445a188afcc8c6a997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 2
   stop: 0
   follow: 1
   minDist: 1
   maxDist: 0.5
   fireing: 0
-  Canfire: 0
+  canfire: 0
   isShoot: 0
-  coldown: 3
+  colldownShoot: 0
   Bullet: {fileID: 4152002217043902519, guid: 93e38d6581486dc4a999c5d63346cd7b, type: 3}
+  katana: {fileID: 0}
+  linePrefab: {fileID: 0}
+  isSlash: 0
+  canSlash: 0
+  maxAttacDist: 0
+  colldownSlash: 0
+  timeToAttack: 0
+  timer: 0
 --- !u!114 &6647570473232613610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,6 +267,7 @@ MonoBehaviour:
   colorOfObj: {r: 1, g: 1, b: 1, a: 1}
   Lifes: []
   baseLife: {fileID: 0}
+  UIcontroller: {fileID: 0}
 --- !u!50 &6647570473232613611
 Rigidbody2D:
   serializedVersion: 4

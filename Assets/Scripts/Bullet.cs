@@ -35,6 +35,7 @@ public class Bullet : MonoBehaviour
             if (!collision.GetComponent<Life>().damaged)
             {
                 collision.GetComponent<Life>().StartCoroutine(collision.GetComponent<Life>().TakeDmg(damage));
+                Destroy(this.gameObject);
             }
             else
             {
@@ -42,11 +43,5 @@ public class Bullet : MonoBehaviour
                 return;
             }
         }
-        if(collision.tag == "Enemy")
-        {
-            return;
-        }
-        Destroy(this.gameObject);
-
     }
 }

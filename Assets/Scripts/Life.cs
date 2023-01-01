@@ -14,6 +14,7 @@ public class Life : MonoBehaviour
     [Header("UI")]
     public GameObject[] Lifes;
     public GameObject baseLife;
+    public GameObject UIcontroller;
     Player player;
     // Start is called before the first frame update
     void Start()
@@ -41,8 +42,16 @@ public class Life : MonoBehaviour
     }
     public void Death()
     {
-        GameObject.Find("WaveController").GetComponent<WaveController>().numEnemysActual--;
-        Destroy(this.gameObject);
+        if (transform.name == "Player")
+        {
+            transform.gameObject.SetActive(false);
+            UIcontroller.GetComponent<UIController>().Death();
+        }
+        else
+        {
+            GameObject.Find("WaveController").GetComponent<WaveController>().numEnemysActual--;
+            Destroy(this.gameObject);
+        }
     }
 
     public IEnumerator TakeDmg(int damage) // Função que conta o tempo (nesse caso é o tempo de coldown).

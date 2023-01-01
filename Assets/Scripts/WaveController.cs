@@ -12,6 +12,7 @@ public class WaveController : MonoBehaviour
     public int numEnemysActual = 0;
     public bool spawn = false;
     public bool waveDone = false;
+    public int maxInWave;
     [Header("EnemysInfo")]
     public GameObject[] enemys;
     public float maxPosInstX;
@@ -32,9 +33,13 @@ public class WaveController : MonoBehaviour
 
     void Update()
     {
-        if (!spawn && numSpawn < wave * 1.5f + 2)
+        if (!spawn && numSpawn < wave * 1.5f + 2 && numEnemysActual < maxInWave)
         {
             int enemyType = Random.Range(0, enemys.Length);
+            if(wave == 5)
+            {
+                enemyType = 2;
+            }
             StartCoroutine(Spawn(enemyType));
         }
         else if (numEnemysActual == 0 && numSpawn >= (int)(wave * 1.5f + 2))
