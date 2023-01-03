@@ -25,7 +25,6 @@ public class BloodTrails : MonoBehaviour
 
             if (collision.GetComponent<Life>().shield == null)
             {
-                print(NumLines);
                 collision.GetComponent<Life>().StartCoroutine("TakeDmg", NumLines-2);
             }
             else if(collision.GetComponent<Life>().shield != null && collision.GetComponent<Life>().shield.GetComponent<Life>().currentHealth > 0)

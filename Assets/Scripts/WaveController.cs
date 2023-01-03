@@ -13,6 +13,7 @@ public class WaveController : MonoBehaviour
     public bool spawn = false;
     public bool waveDone = false;
     public int maxInWave;
+    public float multipliyer;
     [Header("EnemysInfo")]
     public GameObject[] enemys;
     public float maxPosInstX;
@@ -35,8 +36,18 @@ public class WaveController : MonoBehaviour
     {
         if (!spawn && numSpawn < wave * 1.5f + 2 && numEnemysActual < maxInWave)
         {
-            int enemyType = Random.Range(0, enemys.Length);
-            if(wave == 5)
+            int enemyType = 0;
+            int lucky = Random.Range(0, 50);
+            if (lucky > 45)
+            {
+                enemyType = 3;
+            }
+            else
+            {
+                enemyType = Random.Range(0,enemys.Length-1);
+            }
+
+            if (wave == 5)
             {
                 enemyType = 2;
             }
@@ -54,16 +65,38 @@ public class WaveController : MonoBehaviour
         spawn = true;
         numSpawn++;
         numEnemysActual++;
-
         if (Random.Range(1, 3) == 1)
         {
+            
             if (Random.Range(1, 3) == 1)
             {
-                Instantiate(enemys[type], new Vector2(maxPosInstX, Random.Range(maxPosInstY, -maxPosInstY)), Quaternion.identity);
+                GameObject enemy = Instantiate(enemys[type], new Vector2(maxPosInstX, Random.Range(maxPosInstY, -maxPosInstY)), Quaternion.identity);
+
+                enemy.GetComponent<Enemy>().colldownShoot -= multipliyer * wave;
+                enemy.GetComponent<Enemy>().colldownSlash += multipliyer * wave;
+                enemy.GetComponent<Enemy>().maxAttacDist += multipliyer * wave;
+                enemy.GetComponent<Enemy>().timeToAttack -= multipliyer * wave;
+                enemy.GetComponent<Enemy>().bulletVel += multipliyer * wave;
+                enemy.GetComponent<Enemy>().speed += multipliyer * wave;
+                if (enemy.GetComponent<Life>().shield != null && wave % 2 == 5)
+                {
+                    enemy.GetComponent<Life>().shield.GetComponent<Life>().totalHealth++;
+                }
+
             }
             else
             {
-                Instantiate(enemys[type], new Vector2(-maxPosInstX, Random.Range(maxPosInstY, -maxPosInstY)), Quaternion.identity);
+                GameObject enemy = Instantiate(enemys[type], new Vector2(-maxPosInstX, Random.Range(maxPosInstY, -maxPosInstY)), Quaternion.identity);
+                enemy.GetComponent<Enemy>().colldownShoot -= multipliyer * wave;
+                enemy.GetComponent<Enemy>().colldownSlash += multipliyer * wave;
+                enemy.GetComponent<Enemy>().maxAttacDist += multipliyer * wave;
+                enemy.GetComponent<Enemy>().timeToAttack -= multipliyer * wave;
+                enemy.GetComponent<Enemy>().bulletVel += multipliyer * wave;
+                enemy.GetComponent<Enemy>().speed += multipliyer * wave;
+                if (enemy.GetComponent<Life>().shield != null && wave % 2 == 5)
+                {
+                    enemy.GetComponent<Life>().shield.GetComponent<Life>().totalHealth++;
+                }
 
             }
         }
@@ -71,11 +104,32 @@ public class WaveController : MonoBehaviour
         {
             if (Random.Range(1, 3) == 1)
             {
-                Instantiate(enemys[type], new Vector2(Random.Range(maxPosInstX, -maxPosInstX), maxPosInstY), Quaternion.identity);
+                GameObject enemy = Instantiate(enemys[type], new Vector2(Random.Range(maxPosInstX, -maxPosInstX), maxPosInstY), Quaternion.identity);
+                enemy.GetComponent<Enemy>().colldownShoot -= multipliyer * wave;
+                enemy.GetComponent<Enemy>().colldownSlash += multipliyer * wave;
+                enemy.GetComponent<Enemy>().maxAttacDist += multipliyer * wave;
+                enemy.GetComponent<Enemy>().timeToAttack -= multipliyer * wave;
+                enemy.GetComponent<Enemy>().bulletVel += multipliyer * wave;
+                enemy.GetComponent<Enemy>().speed += multipliyer * wave;
+                if (enemy.GetComponent<Life>().shield != null && wave % 2 == 5)
+                {
+                    enemy.GetComponent<Life>().shield.GetComponent<Life>().totalHealth++;
+                }
+
             }
             else
             {
-                Instantiate(enemys[type], new Vector2(Random.Range(maxPosInstX, -maxPosInstX), -maxPosInstY), Quaternion.identity);
+                GameObject enemy = Instantiate(enemys[type], new Vector2(Random.Range(maxPosInstX, -maxPosInstX), -maxPosInstY), Quaternion.identity);
+                enemy.GetComponent<Enemy>().colldownShoot -= multipliyer * wave;
+                enemy.GetComponent<Enemy>().colldownSlash += multipliyer * wave;
+                enemy.GetComponent<Enemy>().maxAttacDist += multipliyer * wave;
+                enemy.GetComponent<Enemy>().timeToAttack -= multipliyer * wave;
+                enemy.GetComponent<Enemy>().bulletVel += multipliyer * wave;
+                enemy.GetComponent<Enemy>().speed += multipliyer * wave;
+                if (enemy.GetComponent<Life>().shield != null && wave % 2 == 5)
+                {
+                    enemy.GetComponent<Life>().shield.GetComponent<Life>().totalHealth++;
+                }
 
             }
         }
@@ -88,6 +142,7 @@ public class WaveController : MonoBehaviour
     {
         GameObject UIWave = Instantiate(waveCout, canvas.transform.position, Quaternion.identity, canvas.transform);
         UIWave.GetComponentInChildren<TMP_Text>().text = "Wave " + wave.ToString();
+
         timeSpawn *= 0.7f;
         numEnemysActual = 0;
         numSpawn = 0;
@@ -106,6 +161,6 @@ public class WaveController : MonoBehaviour
         numSpawn = 3;
         GameObject UIWave = Instantiate(waveCout, canvas.transform.position, Quaternion.identity, canvas.transform);
         UIWave.GetComponentInChildren<TMP_Text>().text = "Wave Tutorial";
-        Destroy(UIWave,8);
+        Destroy(UIWave, 8);
     }
 }

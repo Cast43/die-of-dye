@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19310a03f52b2d445a188afcc8c6a997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3.5
+  speed: 5
   stop: 0
   follow: 0
   minDist: 2
@@ -194,15 +194,20 @@ MonoBehaviour:
   canfire: 0
   isShoot: 0
   colldownShoot: 0
+  bulletVel: 0
   Bullet: {fileID: 4152002217043902519, guid: 93e38d6581486dc4a999c5d63346cd7b, type: 3}
   katana: {fileID: 1597680326506302943}
   linePrefab: {fileID: 9061448012561248978, guid: a70632eebfb23fc40b3f0337952697c1, type: 3}
   isSlash: 1
   canSlash: 0
   maxAttacDist: 6
-  colldownSlash: 4
-  timeToAttack: 2
+  colldownSlash: 5
+  timeToAttack: 3
   timer: 0
+  isHeal: 0
+  changeDirec: 0
+  timeToChanceDirec: 0
+  direc: {x: 0, y: 0}
 --- !u!114 &2752818590027337824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +224,7 @@ MonoBehaviour:
   currentHealth: 0
   damaged: 0
   timeToDamage: 1
+  giveLife: 0
   shield: {fileID: 0}
   colorOfObj: {r: 1, g: 1, b: 1, a: 1}
   Lifes: []

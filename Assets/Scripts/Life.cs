@@ -9,13 +9,14 @@ public class Life : MonoBehaviour
     public int currentHealth;
     public bool damaged = false;
     public float timeToDamage = 1;
+    public int giveLife = 0;
     public GameObject shield;
     public Color colorOfObj;
     [Header("UI")]
     public GameObject[] Lifes;
     public GameObject baseLife;
     public GameObject UIcontroller;
-    Player player;
+    GameObject player;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +27,7 @@ public class Life : MonoBehaviour
                 Lifes[i].SetActive(true);
             }
         }
-        player = GameObject.Find("Player").GetComponent<Player>();
+        player = GameObject.Find("Player");
 
     }
     // utilizei a função awake pois a start não tava funcionando
@@ -49,6 +50,14 @@ public class Life : MonoBehaviour
         }
         else
         {
+            if (player.GetComponent<Life>().currentHealth < player.GetComponent<Life>().totalHealth)
+            {
+                Life playerLife = player.GetComponent<Life>();
+                playerLife.currentHealth += giveLife;
+                playerLife.Lifes[playerLife.currentHealth - 1].SetActive(true);
+                playerLife.StartCoroutine(playerLife.ShowLife());
+
+            }
             GameObject.Find("WaveController").GetComponent<WaveController>().numEnemysActual--;
             Destroy(this.gameObject);
         }
@@ -99,7 +108,7 @@ public class Life : MonoBehaviour
     }
 
 
-    public IEnumerator ShowLife() // Função que conta o tempo (nesse caso é o tempo de coldown).
+    public IEnumerator ShowLife()
     {
         baseLife.SetActive(true);
         yield return new WaitForSeconds(2);

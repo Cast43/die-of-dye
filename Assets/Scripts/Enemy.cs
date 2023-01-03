@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour
     public bool canfire = false;
     public bool isShoot = false;
     public float colldownShoot;
+    public float bulletVel;
     public GameObject Bullet;
     [Header("Slash")]
     public GameObject katana;
@@ -26,6 +27,9 @@ public class Enemy : MonoBehaviour
     public float colldownSlash;
     public float timeToAttack;
     public float timer = 0;
+    [Header("Heal")]
+    public bool isHeal;
+    public float timeToDie;
     Player player;
     Rigidbody2D rb;
     Animator anim;
@@ -41,6 +45,10 @@ public class Enemy : MonoBehaviour
         else if (isSlash)
         {
             canSlash = true;
+        }
+        if(isHeal)
+        {
+            StartCoroutine(TimeToDie());
         }
 
     }
@@ -87,7 +95,7 @@ public class Enemy : MonoBehaviour
             {
                 rb.MovePosition(transform.position + (player.transform.position - transform.position).normalized * Time.deltaTime * speed);
             }
-            else if ((player.transform.position - transform.position).magnitude < minDist)
+            if ((player.transform.position - transform.position).magnitude < minDist)
             {
                 rb.MovePosition(transform.position - (player.transform.position - transform.position).normalized * Time.deltaTime * speed);
 
@@ -96,7 +104,8 @@ public class Enemy : MonoBehaviour
     }
     void Shoot()
     {
-        Instantiate(Bullet, transform.position, Quaternion.identity); // A bala é spawnada na posição da turret e com rotação normal
+        GameObject bullet = Instantiate(Bullet, transform.position, Quaternion.identity); // A bala é spawnada na posição da turret e com rotação normal
+        bullet.GetComponent<Bullet>().speed = bulletVel;
         StartCoroutine(ColldownShoot());
     }
     public IEnumerator ColldownShoot() // Função que conta o tempo (nesse caso é o tempo de coldown).
@@ -126,6 +135,11 @@ public class Enemy : MonoBehaviour
         LineRenderer lineRenderer = currentLine.GetComponent<LineRenderer>();
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, player.transform.position - (transform.position - player.transform.position).normalized * 1.5f);
+    }
+    public IEnumerator TimeToDie()
+    {
+        yield return new WaitForSeconds(timeToDie);
+        GetComponent<Life>().Death();
     }
 
     private void OnTriggerEnter2D(Collider2D collision) //função para detectar se o box collider do player está no circle colider da turret
