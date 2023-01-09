@@ -17,9 +17,11 @@ public class Life : MonoBehaviour
     public GameObject baseLife;
     public GameObject UIcontroller;
     GameObject player;
+    WaveController waveController;
     // Start is called before the first frame update
     void Start()
     {
+        waveController = GameObject.Find("WaveController").GetComponent<WaveController>();
         if (transform.name == "Player")
         {
             for (int i = 0; i < currentHealth; i++)
@@ -58,7 +60,7 @@ public class Life : MonoBehaviour
 
 
             }
-            GameObject.Find("WaveController").GetComponent<WaveController>().numEnemysActual--;
+            waveController.numEnemysActual--;
             Destroy(this.gameObject);
         }
     }
@@ -117,6 +119,7 @@ public class Life : MonoBehaviour
     }
     public IEnumerator GiveLifePlayer()
     {
+        waveController.numEnemysActual--;
         GetComponent<SpriteRenderer>().color = Color.green;
         Lifes[currentHealth].SetActive(true);
         StartCoroutine(ShowLife());

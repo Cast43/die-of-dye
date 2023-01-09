@@ -239,6 +239,7 @@ MonoBehaviour:
   canfire: 0
   isShoot: 0
   colldownShoot: 0
+  bulletVel: 0
   Bullet: {fileID: 4152002217043902519, guid: 93e38d6581486dc4a999c5d63346cd7b, type: 3}
   katana: {fileID: 0}
   linePrefab: {fileID: 0}
@@ -249,9 +250,7 @@ MonoBehaviour:
   timeToAttack: 0
   timer: 0
   isHeal: 0
-  changeDirec: 0
-  timeToChanceDirec: 0
-  direc: {x: 0, y: 0}
+  timeToDie: 0
 --- !u!114 &6647570473232613610
 MonoBehaviour:
   m_ObjectHideFlags: 0
