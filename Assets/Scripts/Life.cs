@@ -50,12 +50,12 @@ public class Life : MonoBehaviour
         }
         else
         {
-            if (player.GetComponent<Life>().currentHealth < player.GetComponent<Life>().totalHealth)
+            if (player.GetComponent<Life>().currentHealth < player.GetComponent<Life>().totalHealth && GetComponent<Enemy>().isHeal)
             {
                 Life playerLife = player.GetComponent<Life>();
                 playerLife.currentHealth += giveLife;
-                playerLife.Lifes[playerLife.currentHealth - 1].SetActive(true);
-                playerLife.StartCoroutine(playerLife.ShowLife());
+                playerLife.StartCoroutine(playerLife.GiveLifePlayer());
+
 
             }
             GameObject.Find("WaveController").GetComponent<WaveController>().numEnemysActual--;
@@ -113,6 +113,16 @@ public class Life : MonoBehaviour
         baseLife.SetActive(true);
         yield return new WaitForSeconds(2);
         baseLife.SetActive(false);
+
+    }
+    public IEnumerator GiveLifePlayer()
+    {
+        GetComponent<SpriteRenderer>().color = Color.green;
+        Lifes[currentHealth].SetActive(true);
+        StartCoroutine(ShowLife());
+        yield return new WaitForSeconds(1);
+        GetComponent<SpriteRenderer>().color = Color.white;
+
 
     }
 

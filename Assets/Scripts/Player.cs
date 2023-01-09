@@ -42,6 +42,7 @@ public class Player : MonoBehaviour
     public float timeBleeding;
     public GameObject DamageArea;
     public GameObject bloodParticles;
+    public GameObject bloodInPLayer;
 
 
 
@@ -288,9 +289,9 @@ public class Player : MonoBehaviour
     public IEnumerator BloodTrail()
     {
         bloodTrail = true;
-        transform.GetComponent<SpriteRenderer>().color = Color.green;
+        bloodInPLayer.SetActive(true);
         yield return new WaitForSeconds(timeOfTrail);
-        transform.GetComponent<SpriteRenderer>().color = Color.white;
+        bloodInPLayer.SetActive(false);
         bloodTrail = false;
     }
     public IEnumerator CleanTrails(GameObject area, GameObject currentLine)

@@ -46,9 +46,9 @@ public class Enemy : MonoBehaviour
         {
             canSlash = true;
         }
-        if(isHeal)
+        if (isHeal)
         {
-            StartCoroutine(TimeToDie());
+            Destroy(this.gameObject,timeToDie);
         }
 
     }
@@ -135,11 +135,6 @@ public class Enemy : MonoBehaviour
         LineRenderer lineRenderer = currentLine.GetComponent<LineRenderer>();
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, player.transform.position - (transform.position - player.transform.position).normalized * 1.5f);
-    }
-    public IEnumerator TimeToDie()
-    {
-        yield return new WaitForSeconds(timeToDie);
-        GetComponent<Life>().Death();
     }
 
     private void OnTriggerEnter2D(Collider2D collision) //função para detectar se o box collider do player está no circle colider da turret

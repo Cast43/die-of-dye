@@ -98,9 +98,9 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.5849056, g: 0, b: 0.1347425, a: 1}
+      key0: {r: 0.754717, g: 0, b: 0.4081726, a: 1}
       key1: {r: 0.75509804, g: 0.004313722, b: 0.18213901, a: 1}
-      key2: {r: 0.58431375, g: 0, b: 0.13333334, a: 0}
+      key2: {r: 0.75686276, g: 0, b: 0.4117647, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
@@ -148,7 +148,7 @@ MonoBehaviour:
   timeToatcivate: 1
   damage: 1
   duration: 1
-  activeColor: {r: 1, g: 0, b: 0.23270464, a: 1}
+  activeColor: {r: 1, g: 0, b: 0.4361801, a: 1}
   points:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
