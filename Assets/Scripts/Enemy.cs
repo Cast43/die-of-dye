@@ -48,6 +48,7 @@ public class Enemy : MonoBehaviour
         }
         if (isHeal)
         {
+            
             Destroy(this.gameObject,timeToDie);
         }
 

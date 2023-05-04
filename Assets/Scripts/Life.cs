@@ -77,12 +77,12 @@ public class Life : MonoBehaviour
         if (shield == null)
         {
             currentHealth -= damage;
+            if (currentHealth <= 0)
+            {
+                Death();
+            }
         }
 
-        if (currentHealth <= 0)
-        {
-            Death();
-        }
         GetComponent<SpriteRenderer>().color = Color.red; //ao ser atingido 
         yield return new WaitForSeconds(timeToDamage);
         GetComponent<SpriteRenderer>().color = colorOfObj; //ao ser atingido 

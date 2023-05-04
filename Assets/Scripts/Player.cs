@@ -47,17 +47,23 @@ public class Player : MonoBehaviour
 
 
     public Rigidbody2D rb;// definindo onde sera armazenado o componente rb do game object(nesse caso o rb do Player)
+    Animator anim;// definindo onde sera armazenado o componente rb do game object(nesse caso o rb do Player)
 
     void Start()
     {
         fakeSpeed = velocidade;
         rb = GetComponent<Rigidbody2D>(); // pegando o componente rb do GameObject
+        anim = GetComponent<Animator>();
         canDashAtk = true;
     }
 
     void FixedUpdate()
     {
-        MoveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+        if (!dashAttack)
+        {
+            MoveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+
+        }
         //nessa linha peguei os inputs horizontais e verticais, e atribui eles no X do vetor e no Y respectivamente
         // o .normalized faz com que o vetor tenha tamanho 1 sempre(normalizacao do vetor). Normalizando mantemos a direção do vetor
         // Pois se andarmos na diagonal sem normalizar teremos o X e o Y de MoveInput valendo 1 ou -1 fazendo com que
@@ -89,9 +95,30 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-
+        anim.SetBool("Dash", dashAttack);
         if (!dashAttack && canDashAtk)  // Se não estiver em um dash e ja tiver passado o cooldown pode dashar
         {
+            if ((int)(MoveInput.x * 10) != 0)
+            {
+                anim.SetInteger("MoveInput", (int)(MoveInput.x * 10));
+            }
+            else
+            {
+                anim.SetInteger("MoveInput", (int)(MoveInput.y * 10));
+            }
+            anim.SetBool("Dash", dashAttack);
+
+
+            if (0 > (int)MoveInput.x || 0 > (int)MoveInput.y)
+            {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
+            else if (0 < (int)MoveInput.x || 0 < (int)MoveInput.y)
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+
+
             if (prepareAttack)
             {
                 GetComponent<LineRenderer>().enabled = true;
@@ -229,7 +256,7 @@ public class Player : MonoBehaviour
     public IEnumerator DashAttackKill(Collider2D hit) // Função que faz com que o player se teleporte para tras do inimigo atingido.
     {
         dashAttackHit = true;
-        rb.MovePosition(hit.transform.position - (transform.position - hit.transform.position).normalized*1.4f);
+        rb.MovePosition(hit.transform.position - (transform.position - hit.transform.position).normalized * 1.4f);
         CreateLine();
         linesPos.Add(hit.transform.position - (transform.position - hit.transform.position).normalized);
 
